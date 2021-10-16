@@ -3,11 +3,11 @@ package common;
 import java.util.ArrayList;
 import java.util.List;
 
-import static common.TaskStatuses.DONE;
-import static common.TaskStatuses.NOT_DONE;
+import static common.TaskStatusesInterface.DONE;
+import static common.TaskStatusesInterface.NOT_DONE;
 
 
-public class TaskService {
+public class TaskService implements CommandInterface {
     Integer id = 0;
     String commandName = "";
     private Input input = new Input();
@@ -19,43 +19,79 @@ public class TaskService {
             commandName = input.enterCommand();
             readCommand(commandName);
         }
-        while (!commandName.equals("quit"));
+        while (!commandName.equalsIgnoreCase(QUIT));
     }
-
 
     public void readCommand(String command) {
         String[] parse = command.split(" ");
         String commandName = parse[0].toLowerCase();
+
+
         switch (commandName) {
-            case "add": {
+            case ADD: {
                 this.add(command.replaceFirst("^\\S*", "").trim());
                 break;
             }
-            case "toggle": {
+            case TOGGLE: {
                 this.toggle(command.replaceFirst("^\\S*", "").trim());
                 break;
             }
-            case "print": {
-                this.print();
-                break;
+            case PRINT: {
+                try {
+                    if ((parse[1].equalsIgnoreCase("all"))) {
+                        this.printAll();
+                        break;
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    this.print();
+                    break;
+                }
             }
-            case "print[all]": {
-                this.printAll();
+            default:
+                System.out.println("Данной команды не существует");
                 break;
-            }
         }
     }
 
     public void add(String description) {
         if (description.isEmpty())
             System.out.println("Ошибка: описание команды не может быть пустым");
-        else {
-            Task task = new Task(description);
-            tasks.add(task);
-            task.setId(++id);
+        else if (tasks.isEmpty()) {
+            if (description.contains("\\n")) {
+                if (description.startsWith("\\n")) {
+                    System.out.println("Ошибка добавления задачи.Символ переноса в начале строки.");
+                } else {
+                    String[] str = description.split("\\\\n");
+                    String desc = str[0];
+
+                    Task task = new Task(desc);
+                    tasks.add(task);
+                    task.setId(1);
+                    System.out.println("Задача успешно добавлена");
+                }
+            } else {
+                Task task = new Task(description);
+                tasks.add(task);
+                task.setId(1);
+                System.out.println("Задача успешно добавлена");
+            }
+        } else if (description.contains("\\n")) {
+            if (description.startsWith("\\n")) {
+                System.out.println("Ошибка добавления задачи.Символ переноса в начале строки.");
+            } else {
+                String[] str = description.split("\\\\n");
+                String desc = str[0];
+                tasks.get(0).setId(1);
+                tasks.get(0).setDescription(desc);
+                System.out.println("Задача успешно добавлена");
+            }
+        } else {
+            tasks.get(0).setId(1);
+            tasks.get(0).setDescription(description);
             System.out.println("Задача успешно добавлена");
         }
     }
+
 
     public void toggle(String id) {
         try {
@@ -81,7 +117,8 @@ public class TaskService {
         } else {
             for (int i = 0; i < tasks.size(); i++) {
                 if (tasks.get(i).getStatus() == NOT_DONE)
-                    System.out.println(String.format("%s. [%s] %s", tasks.get(i).getId(), tasks.get(i).getStatus(), tasks.get(i).getDescription()));
+                    System.out.println(String.format("%s. [%s] %s", tasks.get(i).getId(), tasks.get(i).getStatus(),
+                            tasks.get(i).getDescription()));
             }
         }
     }
@@ -91,7 +128,8 @@ public class TaskService {
             System.out.println("Список задач пуст");
         } else
             for (int i = 0; i < tasks.size(); i++)
-                System.out.println(String.format("%s. [%s] %s", tasks.get(i).getId(), tasks.get(i).getStatus(), tasks.get(i).getDescription()));
+                System.out.println(String.format("%s. [%s] %s", tasks.get(i).getId(), tasks.get(i).getStatus(),
+                        tasks.get(i).getDescription()));
     }
 }
 

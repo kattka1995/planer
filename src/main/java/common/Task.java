@@ -1,6 +1,7 @@
 package common;
 
-import static common.TaskStatuses.NOT_DONE;
+
+import static common.TaskStatusesInterface.NOT_DONE;
 
 public class Task {
     private Integer id;
