@@ -33,7 +33,7 @@ public class TaskService implements CommandInterface {
                 break;
             }
             case TOGGLE: {
-                this.toggle(command.replaceFirst("^\\S*", "").trim());
+                this.toggle(command.replaceFirst("^\\S* ", ""));
                 break;
             }
             case PRINT: {
