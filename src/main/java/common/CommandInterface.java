@@ -5,5 +5,5 @@ public interface CommandInterface {
   String PRINT = "print";
   String TOGGLE = "toggle";
   String QUIT = "quit";
-
+  String ALL = "all";
 }

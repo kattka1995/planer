@@ -2,13 +2,12 @@ package common;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import static common.TaskStatusesInterface.DONE;
 import static common.TaskStatusesInterface.NOT_DONE;
 
 
 public class TaskService implements CommandInterface {
-    Integer id = 0;
+    public static final String ERROR = "Error";
     String commandName = "";
     private Input input = new Input();
     private List<Task> tasks = new ArrayList<>();
@@ -26,23 +25,28 @@ public class TaskService implements CommandInterface {
         String[] parse = command.split(" ");
         String commandName = parse[0].toLowerCase();
 
-
         switch (commandName) {
             case ADD: {
                 this.add(command.replaceFirst("^\\S*", "").trim());
                 break;
             }
             case TOGGLE: {
-                this.toggle(command.replaceFirst("^\\S* ", ""));
+                if (parse.length == 2) {
+                    this.toggle(command.replaceFirst("^\\S*", "").trim());
+                    break;
+                } else
+                    System.out.println(ERROR);
+            }
+            case QUIT: {
                 break;
             }
             case PRINT: {
-                try {
-                    if ((parse[1].equalsIgnoreCase("all"))) {
+                if (parse.length == 2) {
+                    if (parse[1].equalsIgnoreCase(ALL)) {
                         this.printAll();
                         break;
                     }
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } else if (parse.length == 1) {
                     this.print();
                     break;
                 }
@@ -55,58 +59,61 @@ public class TaskService implements CommandInterface {
 
     public void add(String description) {
         if (description.isEmpty())
-            System.out.println("Ошибка: описание команды не может быть пустым");
+            System.out.println(ERROR);
         else if (tasks.isEmpty()) {
             if (description.contains("\\n")) {
                 if (description.startsWith("\\n")) {
-                    System.out.println("Ошибка добавления задачи.Символ переноса в начале строки.");
+                    System.out.println(ERROR);
                 } else {
                     String[] str = description.split("\\\\n");
                     String desc = str[0];
-
-                    Task task = new Task(desc);
-                    tasks.add(task);
-                    task.setId(1);
-                    System.out.println("Задача успешно добавлена");
+                    addNewTask(desc);
                 }
             } else {
-                Task task = new Task(description);
-                tasks.add(task);
-                task.setId(1);
-                System.out.println("Задача успешно добавлена");
+                addNewTask(description);
             }
         } else if (description.contains("\\n")) {
             if (description.startsWith("\\n")) {
-                System.out.println("Ошибка добавления задачи.Символ переноса в начале строки.");
+                System.out.println(ERROR);
             } else {
                 String[] str = description.split("\\\\n");
                 String desc = str[0];
-                tasks.get(0).setId(1);
-                tasks.get(0).setDescription(desc);
-                System.out.println("Задача успешно добавлена");
+                changeExistingTask(desc);
             }
         } else {
-            tasks.get(0).setId(1);
-            tasks.get(0).setDescription(description);
-            System.out.println("Задача успешно добавлена");
+            changeExistingTask(description);
         }
     }
 
+    private void addNewTask(String description) {
+
+        Task task = new Task(description);
+        tasks.add(task);
+        task.setId(1);
+    }
+
+    private void changeExistingTask(String description) {
+
+        tasks.get(0).setId(1);
+        tasks.get(0).setDescription(description);
+        if (tasks.get(0).getStatus().equals(DONE)) ;
+        {
+            tasks.get(0).setStatus(NOT_DONE);
+        }
+    }
 
     public void toggle(String id) {
         try {
             Integer taskId = Integer.valueOf(id);
             if (taskId > tasks.size() || taskId <= 0)
-                System.out.println("Ошибка: веденного id не существует");
+                System.out.println(ERROR);
             else if (tasks.get(taskId - 1).getStatus() == DONE) {
                 tasks.get(taskId - 1).setStatus(NOT_DONE);
-                System.out.println("Состояние задачи успешно изменено");
             } else {
                 tasks.get(taskId - 1).setStatus(DONE);
-                System.out.println("Состояние задачи успешно изменено");
             }
         } catch (NumberFormatException ex) {
-            System.out.println("Ошибка: id должен быть числом");
+            System.out.println(ERROR);
         }
     }
 
