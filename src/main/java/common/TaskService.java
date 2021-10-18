@@ -14,7 +14,7 @@ public class TaskService implements CommandInterface {
 
     public TaskService() {
         do {
-            System.out.println("Введите название команды : add <описание задачи>; toggle <идентификатор задачи>; print; print[all]; quit.");
+            System.out.println("Введите название команды : add <описание задачи>; toggle <идентификатор задачи>; print; print all; quit.");
             commandName = input.enterCommand();
             readCommand(commandName);
         }
