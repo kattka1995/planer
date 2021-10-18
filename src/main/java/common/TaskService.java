@@ -2,6 +2,7 @@ package common;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static common.TaskStatusesInterface.DONE;
 import static common.TaskStatusesInterface.NOT_DONE;
 
@@ -105,12 +106,13 @@ public class TaskService implements CommandInterface {
     public void toggle(String id) {
         try {
             Integer taskId = Integer.valueOf(id);
+            Integer taskListId = taskId - 1;
             if (taskId > tasks.size() || taskId <= 0)
                 System.out.println(ERROR);
-            else if (tasks.get(taskId - 1).getStatus() == DONE) {
-                tasks.get(taskId - 1).setStatus(NOT_DONE);
+            else if (tasks.get(taskListId).getStatus() == DONE) {
+                tasks.get(taskListId).setStatus(NOT_DONE);
             } else {
-                tasks.get(taskId - 1).setStatus(DONE);
+                tasks.get(taskListId).setStatus(DONE);
             }
         } catch (NumberFormatException ex) {
             System.out.println(ERROR);
