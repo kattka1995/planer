@@ -59,49 +59,31 @@ public class TaskService implements CommandInterface {
     }
 
     public void add(String description) {
-        if (description.isEmpty())
+        if (description.isEmpty()) {
             System.out.println(ERROR);
-        else if (tasks.isEmpty()) {
+        } else {
             if (description.contains("\\n")) {
                 if (description.startsWith("\\n")) {
                     System.out.println(ERROR);
                 } else {
                     String[] str = description.split("\\\\n");
-                    String desc = str[0];
-                    addNewTask(desc);
+                    description = str[0];
+                    addNewTask(description);
                 }
-            } else {
+            } else
                 addNewTask(description);
-            }
-        } else if (description.contains("\\n")) {
-            if (description.startsWith("\\n")) {
-                System.out.println(ERROR);
-            } else {
-                String[] str = description.split("\\\\n");
-                String desc = str[0];
-                changeExistingTask(desc);
-            }
-        } else {
-            changeExistingTask(description);
         }
     }
 
     private void addNewTask(String description) {
-
         Task task = new Task(description);
-        tasks.add(task);
-        task.setId(1);
-    }
-
-    private void changeExistingTask(String description) {
-
-        tasks.get(0).setId(1);
-        tasks.get(0).setDescription(description);
-        if (tasks.get(0).getStatus().equals(DONE)) ;
-        {
-            tasks.get(0).setStatus(NOT_DONE);
+        if (tasks.isEmpty()) {
+            tasks.add(task);
+        } else {
+            tasks.set(0, task);
         }
     }
+
 
     public void toggle(String id) {
         try {

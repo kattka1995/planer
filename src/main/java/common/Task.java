@@ -11,6 +11,8 @@ public class Task {
     public Task(String description) {
         this.status = NOT_DONE;
         this.description = description;
+        this.id = 1;
+
     }
 
     public String getStatus() {
