@@ -1,6 +1,6 @@
 package common;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static common.TaskStatusesInterface.DONE;
@@ -11,7 +11,7 @@ public class TaskService implements CommandInterface {
     public static final String ERROR = "Error";
     String commandName = "";
     private Input input = new Input();
-    private List<Task> tasks = new ArrayList<>();
+    private List<Task> tasks = Arrays.asList(new Task());
 
     public TaskService() {
         do {
@@ -59,29 +59,20 @@ public class TaskService implements CommandInterface {
     }
 
     public void add(String description) {
-        if (description.isEmpty()) {
+        if ((description.isEmpty()) || (description.startsWith("\\n"))) {
             System.out.println(ERROR);
         } else {
             if (description.contains("\\n")) {
-                if (description.startsWith("\\n")) {
-                    System.out.println(ERROR);
-                } else {
-                    String[] str = description.split("\\\\n");
-                    description = str[0];
-                    addNewTask(description);
-                }
-            } else
-                addNewTask(description);
+                String[] str = description.split("\\\\n");
+                description = str[0];
+            }
+            addNewTask(description);
         }
     }
 
     private void addNewTask(String description) {
         Task task = new Task(description);
-        if (tasks.isEmpty()) {
-            tasks.add(task);
-        } else {
-            tasks.set(0, task);
-        }
+        tasks.set(0, task);
     }
 
 

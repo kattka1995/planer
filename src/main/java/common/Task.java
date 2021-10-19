@@ -14,7 +14,9 @@ public class Task {
         this.id = 1;
 
     }
+public Task(){
 
+}
     public String getStatus() {
         return status;
     }
