@@ -1,6 +1,6 @@
 package common;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static common.TaskStatusesInterface.DONE;
@@ -11,7 +11,8 @@ public class TaskService implements CommandInterface {
     public static final String ERROR = "Error";
     String commandName = "";
     private Input input = new Input();
-    private List<Task> tasks = Arrays.asList(new Task());
+    private List<Task> tasks = new ArrayList<>();
+    private int id = 0;
 
     public TaskService() {
         do {
@@ -37,6 +38,7 @@ public class TaskService implements CommandInterface {
                     break;
                 } else
                     System.out.println(ERROR);
+                break;
             }
             case QUIT: {
                 break;
@@ -50,8 +52,25 @@ public class TaskService implements CommandInterface {
                 } else if (parse.length == 1) {
                     this.print();
                     break;
+                }}
+                case SEARCH: {
+                    if (parse.length==1) {
+                        System.out.println(ERROR);
+                    break;}
+                    else {
+                        this.search(command.replaceFirst("^\\S*", "").trim());
+                        break;
+                    }
                 }
+            case DELETE: {
+                if (parse.length == 2) {
+                    this.delete(command.replaceFirst("^\\S*", "").trim());
+                    break;
+                } else
+                    System.out.println(ERROR);
+                break;
             }
+
             default:
                 System.out.println("Данной команды не существует");
                 break;
@@ -72,7 +91,9 @@ public class TaskService implements CommandInterface {
 
     private void addNewTask(String description) {
         Task task = new Task(description);
-        tasks.set(0, task);
+        tasks.add(task);
+        task.setId(++id);
+
     }
 
 
@@ -92,18 +113,42 @@ public class TaskService implements CommandInterface {
         }
     }
 
+    public void  search(String desc){
+        tasks.stream().filter(s->s.getDescription().contains(desc.toLowerCase()))
+                .forEach(k->System.out.println(String.format("%s. [%s] %s", k.getId(), k.getStatus(),
+                       k.getDescription())));
+    }
+    public void delete (String id){
+        try {
+            this.id--;
+            Integer taskId = Integer.valueOf(id);
+            Integer taskListId = taskId - 1;
+            if (taskId > tasks.size() || taskId <= 0)
+                System.out.println(ERROR);
+            else {tasks.remove(tasks.get(taskListId));
+                for (Task task:tasks) {
+                    if(task.getId() >= taskId){
+                        task.setId(taskId++);
+                    }
+                }
+
+
+            }
+        } catch (NumberFormatException ex) {
+            System.out.println(ERROR);
+        }
+    }
+
     public void print() {
         Long uncheckTasksCount = tasks.stream().filter(s -> s.getStatus().equals(NOT_DONE)).count();
         if (uncheckTasksCount == 0) {
             System.out.println("Список невыполненных задач пуст");
         } else {
-            for (int i = 0; i < tasks.size(); i++) {
-                if (tasks.get(i).getStatus() == NOT_DONE)
-                    System.out.println(String.format("%s. [%s] %s", tasks.get(i).getId(), tasks.get(i).getStatus(),
-                            tasks.get(i).getDescription()));
+            tasks.stream().filter(s->s.getStatus().equals(NOT_DONE)).forEach(k-> System.out.println((String.format("%s. [%s] %s", k.getId(), k.getStatus(),
+                    k.getDescription()))));
             }
         }
-    }
+
 
     public void printAll() {
         if (tasks.size() == 0) {

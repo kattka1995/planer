@@ -4,19 +4,17 @@ package common;
 import static common.TaskStatusesInterface.NOT_DONE;
 
 public class Task {
-    private Integer id;
+    private int id;
     private String description;
     private String status;
 
     public Task(String description) {
         this.status = NOT_DONE;
         this.description = description;
-        this.id = 1;
 
     }
-public Task(){
+    public Task(){}
 
-}
     public String getStatus() {
         return status;
     }
@@ -33,11 +31,11 @@ public Task(){
         this.description = description;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
