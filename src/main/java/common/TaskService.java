@@ -2,7 +2,6 @@ package common;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import static common.TaskStatusesInterface.DONE;
 import static common.TaskStatusesInterface.NOT_DONE;
 
@@ -52,16 +51,26 @@ public class TaskService implements CommandInterface {
                 } else if (parse.length == 1) {
                     this.print();
                     break;
-                }}
-                case SEARCH: {
-                    if (parse.length==1) {
-                        System.out.println(ERROR);
-                    break;}
-                    else {
-                        this.search(command.replaceFirst("^\\S*", "").trim());
-                        break;
-                    }
                 }
+            }
+            case SEARCH: {
+                if (parse.length == 1) {
+                    System.out.println(ERROR);
+                    break;
+                } else {
+                    this.search(command.replaceFirst("^\\S*", "").trim());
+                    break;
+                }
+            }
+            case EDIT: {
+                if (parse.length >= 3) {
+                    this.editTask(parse[1], command.replaceFirst("^\\S* \\d+ ", "").trim());
+                    break;
+                } else
+                    System.out.println(ERROR);
+                break;
+            }
+
             case DELETE: {
                 if (parse.length == 2) {
                     this.delete(command.replaceFirst("^\\S*", "").trim());
@@ -96,6 +105,27 @@ public class TaskService implements CommandInterface {
 
     }
 
+    private void editTask(String id, String newDescription) {
+        try {
+            Integer taskId = Integer.valueOf(id);
+            Integer taskListId = taskId - 1;
+            if (taskId > tasks.size() || taskId <= 0)
+                System.out.println(ERROR);
+            else if (newDescription.isEmpty() || (newDescription.startsWith("\\n"))) {
+                System.out.println(ERROR);
+            } else {
+                if (newDescription.contains("\\n")) {
+                    String[] str = newDescription.split("\\\\n");
+                    newDescription = str[0];
+                }
+                tasks.get(taskListId).setDescription(newDescription);
+
+            }
+        } catch (NumberFormatException ex) {
+            System.out.println(ERROR);
+        }
+    }
+
 
     public void toggle(String id) {
         try {
@@ -113,26 +143,27 @@ public class TaskService implements CommandInterface {
         }
     }
 
-    public void  search(String desc){
-        tasks.stream().filter(s->s.getDescription().contains(desc.toLowerCase()))
-                .forEach(k->System.out.println(String.format("%s. [%s] %s", k.getId(), k.getStatus(),
-                       k.getDescription())));
+    public void search(String desc) {
+        tasks.stream().filter(s -> s.getDescription().contains(desc.toLowerCase()))
+                .forEach(k -> System.out.println(String.format("%s. [%s] %s", k.getId(), k.getStatus(),
+                        k.getDescription())));
     }
-    public void delete (String id){
+
+    public void delete(String id) {
         try {
-            this.id--;
+
             Integer taskId = Integer.valueOf(id);
             Integer taskListId = taskId - 1;
             if (taskId > tasks.size() || taskId <= 0)
                 System.out.println(ERROR);
-            else {tasks.remove(tasks.get(taskListId));
-                for (Task task:tasks) {
-                    if(task.getId() >= taskId){
+            else {
+                tasks.remove(tasks.get(taskListId));
+                this.id--;
+                for (Task task : tasks) {
+                    if (task.getId() >= taskId) {
                         task.setId(taskId++);
                     }
                 }
-
-
             }
         } catch (NumberFormatException ex) {
             System.out.println(ERROR);
@@ -144,19 +175,18 @@ public class TaskService implements CommandInterface {
         if (uncheckTasksCount == 0) {
             System.out.println("Список невыполненных задач пуст");
         } else {
-            tasks.stream().filter(s->s.getStatus().equals(NOT_DONE)).forEach(k-> System.out.println((String.format("%s. [%s] %s", k.getId(), k.getStatus(),
+            tasks.stream().filter(s -> s.getStatus().equals(NOT_DONE)).forEach(k -> System.out.println((String.format("%s. [%s] %s", k.getId(), k.getStatus(),
                     k.getDescription()))));
-            }
         }
+    }
 
 
     public void printAll() {
         if (tasks.size() == 0) {
             System.out.println("Список задач пуст");
         } else
-            for (int i = 0; i < tasks.size(); i++)
-                System.out.println(String.format("%s. [%s] %s", tasks.get(i).getId(), tasks.get(i).getStatus(),
-                        tasks.get(i).getDescription()));
+            tasks.stream().map(task -> String.format("%s. [%s] %s", task.getId(), task.getStatus(),
+                    task.getDescription())).forEach(System.out::println);
     }
 }
 

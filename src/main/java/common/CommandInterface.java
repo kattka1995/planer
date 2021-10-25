@@ -8,4 +8,5 @@ public interface CommandInterface {
   String ALL = "all";
   String SEARCH = "search";
   String DELETE  = "delete";
+  String EDIT  = "edit";
 }
