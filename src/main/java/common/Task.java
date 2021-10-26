@@ -4,7 +4,6 @@ package common;
 import static common.TaskStatusesInterface.NOT_DONE;
 
 public class Task {
-    private int id;
     private String description;
     private String status;
 
@@ -13,7 +12,6 @@ public class Task {
         this.description = description;
 
     }
-    public Task(){}
 
     public String getStatus() {
         return status;
@@ -31,12 +29,6 @@ public class Task {
         this.description = description;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
 }

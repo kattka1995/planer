@@ -3,6 +3,6 @@ package common;
 public class Application {
 
     public static void main(String[] args) {
-        new TaskService();
+        new TaskService().run();
     }
 }
