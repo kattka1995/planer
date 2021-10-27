@@ -30,12 +30,12 @@ public class TaskService implements CommandInterface {
 
         switch (commandName) {
             case ADD: {
-                this.add(command.replaceFirst("^\\S*", "").trim());
+                add(replaceCommandName(command));
                 break;
             }
             case TOGGLE: {
                 if (parse.length == 2) {
-                    this.toggle(command.replaceFirst("^\\S*", "").trim());
+                    toggle(replaceCommandName(command));
                 } else
                     System.out.println(ERROR);
                 break;
@@ -45,9 +45,9 @@ public class TaskService implements CommandInterface {
             }
             case PRINT: {
                 if (parse.length == 2 && parse[1].equalsIgnoreCase(ALL))
-                    this.print(ALL);
+                   print(ALL);
                 else if (parse.length == 1)
-                    this.print();
+                   print();
                 else System.out.println(ERROR);
                 break;
             }
@@ -55,13 +55,13 @@ public class TaskService implements CommandInterface {
                 if (parse.length == 1) {
                     System.out.println(ERROR);
                 } else
-                    this.search(command.replaceFirst("^\\S*", "").trim());
+                  search(replaceCommandName(command));
                 break;
 
             }
             case EDIT: {
                 if (parse.length >= 3) {
-                    this.editTask(parse[1], command.replaceFirst("^\\S* \\d+ ", "").trim());
+                    editTask(parse[1], command.replaceFirst("^\\S* \\d+ ", "").trim());
                 } else
                     System.out.println(ERROR);
                 break;
@@ -69,7 +69,7 @@ public class TaskService implements CommandInterface {
 
             case DELETE: {
                 if (parse.length == 2) {
-                    this.delete(command.replaceFirst("^\\S*", "").trim());
+                   delete(replaceCommandName(command));
                 } else
                     System.out.println(ERROR);
                 break;
@@ -89,6 +89,10 @@ public class TaskService implements CommandInterface {
             }
             addNewTask(description);
         }
+    }
+
+    private String replaceCommandName (String str){
+       return str.replaceFirst("^\\S*", "").trim();
     }
 
     private void addNewTask(String description) {
