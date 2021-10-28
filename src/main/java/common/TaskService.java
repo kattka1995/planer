@@ -1,9 +1,7 @@
 package common;
 
 import java.util.HashMap;
-
-import static common.TaskStatusesInterface.DONE;
-import static common.TaskStatusesInterface.NOT_DONE;
+import java.util.Map;
 
 
 public class TaskService implements CommandInterface {
@@ -12,6 +10,11 @@ public class TaskService implements CommandInterface {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     String commandName = "";
     private Integer taskId = 1;
+
+    private static void printTask(Map.Entry<Integer, Task> k) {
+        System.out.printf(("%s. [%s] %s\n"), k.getKey(), k.getValue().getStatus() ? "x" : " ",
+                k.getValue().getDescription());
+    }
 
     public void run() {
         do {
@@ -45,9 +48,9 @@ public class TaskService implements CommandInterface {
             }
             case PRINT: {
                 if (parse.length == 2 && parse[1].equalsIgnoreCase(ALL))
-                   print(ALL);
+                    print(true);
                 else if (parse.length == 1)
-                   print();
+                    print(false);
                 else System.out.println(ERROR);
                 break;
             }
@@ -55,7 +58,7 @@ public class TaskService implements CommandInterface {
                 if (parse.length == 1) {
                     System.out.println(ERROR);
                 } else
-                  search(replaceCommandName(command));
+                    search(replaceCommandName(command));
                 break;
 
             }
@@ -69,7 +72,7 @@ public class TaskService implements CommandInterface {
 
             case DELETE: {
                 if (parse.length == 2) {
-                   delete(replaceCommandName(command));
+                    delete(replaceCommandName(command));
                 } else
                     System.out.println(ERROR);
                 break;
@@ -91,8 +94,8 @@ public class TaskService implements CommandInterface {
         }
     }
 
-    private String replaceCommandName (String str){
-       return str.replaceFirst("^\\S*", "").trim();
+    private String replaceCommandName(String str) {
+        return str.replaceFirst("^\\S*", "").trim();
     }
 
     private void addNewTask(String description) {
@@ -103,11 +106,9 @@ public class TaskService implements CommandInterface {
     private void editTask(String id, String newDescription) {
         try {
             Integer taskId = Integer.valueOf(id);
-            if (tasks.get(taskId) == null)
+            if (!tasks.containsKey(taskId) || newDescription.isEmpty())
                 System.out.println(ERROR);
-            else if (newDescription.isEmpty()) {
-                System.out.println(ERROR);
-            } else {
+            else {
                 tasks.get(taskId).setDescription(newDescription);
             }
         } catch (NumberFormatException ex) {
@@ -118,12 +119,12 @@ public class TaskService implements CommandInterface {
     public void toggle(String id) {
         try {
             Integer taskId = Integer.valueOf(id);
-            if (tasks.get(taskId) == null)
+            if (!tasks.containsKey(taskId))
                 System.out.println(ERROR);
-            else if (tasks.get(taskId).getStatus() == DONE) {
-                tasks.get(taskId).setStatus(NOT_DONE);
+            else if (tasks.get(taskId).getStatus()) {
+                tasks.get(taskId).setStatus(false);
             } else {
-                tasks.get(taskId).setStatus(DONE);
+                tasks.get(taskId).setStatus(true);
             }
         } catch (NumberFormatException ex) {
             System.out.println(ERROR);
@@ -132,14 +133,13 @@ public class TaskService implements CommandInterface {
 
     public void search(String desc) {
         tasks.entrySet().stream().filter(s -> s.getValue().getDescription().toLowerCase().contains(desc.toLowerCase()))
-                .forEach(k -> System.out.println(String.format("%s. [%s] %s", k.getKey(), k.getValue().getStatus(),
-                        k.getValue().getDescription())));
+                .forEach(TaskService::printTask);
     }
 
     public void delete(String id) {
         try {
             Integer taskId = Integer.valueOf(id);
-            if (tasks.get(taskId) == null)
+            if (!tasks.containsKey(taskId))
                 System.out.println(ERROR);
             else {
                 tasks.keySet().remove(taskId);
@@ -149,18 +149,16 @@ public class TaskService implements CommandInterface {
         }
     }
 
-    public void print(String... all) {
-        if (all.length == 1) {
-            tasks.entrySet().stream().map(task -> String.format("%s. [%s] %s", task.getKey(), task.getValue().getStatus(),
-                    task.getValue().getDescription())).forEach(System.out::println);
-        } else if (all.length == 0) {
-            tasks.entrySet().stream().filter(s -> s.getValue().getStatus().equals(NOT_DONE)).forEach(k ->
-                    System.out.println((String.format("%s. [%s] %s", k.getKey(), k.getValue().getStatus(),
-                            k.getValue().getDescription()))));
-        }
+    public void print(boolean hasAll) {
+        if (hasAll) {
+            tasks.entrySet().forEach(TaskService::printTask);
+        } else
+            tasks.entrySet().stream().filter(s -> !s.getValue().getStatus()).forEach(TaskService::printTask);
     }
-
 }
+
+
+
 
 
 

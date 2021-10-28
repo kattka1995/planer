@@ -1,23 +1,23 @@
 package common;
 
 
-import static common.TaskStatusesInterface.NOT_DONE;
+
 
 public class Task {
     private String description;
-    private String status;
+    private boolean status;
 
     public Task(String description) {
-        this.status = NOT_DONE;
+        this.status = false;
         this.description = description;
 
     }
 
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
