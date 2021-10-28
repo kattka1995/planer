@@ -1,27 +1,23 @@
 package common;
 
 
-import static common.TaskStatusesInterface.NOT_DONE;
+
 
 public class Task {
-    private Integer id;
     private String description;
-    private String status;
+    private boolean status;
 
     public Task(String description) {
-        this.status = NOT_DONE;
+        this.status = false;
         this.description = description;
-        this.id = 1;
 
     }
-public Task(){
 
-}
-    public String getStatus() {
+    public boolean getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
@@ -33,12 +29,6 @@ public Task(){
         this.description = description;
     }
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
 }

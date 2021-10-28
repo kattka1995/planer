@@ -6,4 +6,7 @@ public interface CommandInterface {
   String TOGGLE = "toggle";
   String QUIT = "quit";
   String ALL = "all";
+  String SEARCH = "search";
+  String DELETE  = "delete";
+  String EDIT  = "edit";
 }
