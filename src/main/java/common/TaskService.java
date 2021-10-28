@@ -121,11 +121,8 @@ public class TaskService implements CommandInterface {
             Integer taskId = Integer.valueOf(id);
             if (!tasks.containsKey(taskId))
                 System.out.println(ERROR);
-            else if (tasks.get(taskId).getStatus()) {
-                tasks.get(taskId).setStatus(false);
-            } else {
-                tasks.get(taskId).setStatus(true);
-            }
+            else tasks.get(taskId)
+                    .setStatus(!tasks.get(taskId).getStatus());
         } catch (NumberFormatException ex) {
             System.out.println(ERROR);
         }
