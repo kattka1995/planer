@@ -47,7 +47,7 @@ public class TaskService implements CommandInterface {
                 break;
             }
             case PRINT: {
-                if (parse.length == 2 && parse[1].equalsIgnoreCase(ALL))
+                if (parse.length == 2 && ALL.equalsIgnoreCase(parse[1]))
                     print(true);
                 else if (parse.length == 1)
                     print(false);
@@ -129,8 +129,9 @@ public class TaskService implements CommandInterface {
     }
 
     public void search(String desc) {
-        tasks.entrySet().stream().filter(s -> s.getValue().getDescription().toLowerCase().contains(desc.toLowerCase()))
-                .forEach(TaskService::printTask);
+        tasks.entrySet().stream()
+            .filter(s -> s.getValue().getDescription().toLowerCase().contains(desc.toLowerCase()))
+            .forEach(TaskService::printTask);
     }
 
     public void delete(String id) {
@@ -148,9 +149,12 @@ public class TaskService implements CommandInterface {
 
     public void print(boolean hasAll) {
         if (hasAll) {
-            tasks.entrySet().forEach(TaskService::printTask);
+            tasks.entrySet()
+                .forEach(TaskService::printTask);
         } else
-            tasks.entrySet().stream().filter(s -> !s.getValue().getStatus()).forEach(TaskService::printTask);
+            tasks.entrySet().stream()
+                .filter(s -> !s.getValue().getStatus())
+                .forEach(TaskService::printTask);
     }
 }
 

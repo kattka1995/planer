@@ -1,8 +1,5 @@
 package common;
 
-
-
-
 public class Task {
     private String description;
     private boolean status;
@@ -10,7 +7,6 @@ public class Task {
     public Task(String description) {
         this.status = false;
         this.description = description;
-
     }
 
     public boolean getStatus() {
