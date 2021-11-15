@@ -1,0 +1,28 @@
+15.11.2021 06:30:17.751 [main] DEBUG  common.TaskService - User input: add ty1
+15.11.2021 06:30:20.089 [main] DEBUG  common.TaskService - User input: add t2
+15.11.2021 06:30:22.130 [main] DEBUG  common.TaskService - User input: pritn 
+15.11.2021 06:30:24.187 [main] DEBUG  common.TaskService - User input: print
+15.11.2021 06:30:24.239 [main] DEBUG  common.TaskService - User output: 1. [ ] ty1
+
+15.11.2021 06:30:24.239 [main] DEBUG  common.TaskService - User output: 2. [ ] t2
+
+15.11.2021 06:30:29.041 [main] DEBUG  common.TaskService - User input: toggle t1
+15.11.2021 06:30:29.044 [main] ERROR  common.TaskService - Cannot parse number: t1
+java.lang.NumberFormatException: For input string: "t1"
+	at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+	at java.lang.Integer.parseInt(Integer.java:580)
+	at java.lang.Integer.valueOf(Integer.java:766)
+	at common.TaskService.toggle(TaskService.java:138)
+	at common.TaskService.readCommand(TaskService.java:52)
+	at common.TaskService.run(TaskService.java:34)
+	at common.Application.main(Application.java:6)
+15.11.2021 06:30:32.184 [main] DEBUG  common.TaskService - User input: roggle 1
+15.11.2021 06:30:35.681 [main] DEBUG  common.TaskService - User input: toggle 1
+15.11.2021 06:30:39.678 [main] DEBUG  common.TaskService - User input: print 
+15.11.2021 06:30:39.679 [main] DEBUG  common.TaskService - User output: 2. [ ] t2
+
+15.11.2021 06:30:42.688 [main] DEBUG  common.TaskService - User input: print all
+15.11.2021 06:30:42.689 [main] DEBUG  common.TaskService - User output: 1. [x] ty1
+
+15.11.2021 06:30:42.690 [main] DEBUG  common.TaskService - User output: 2. [ ] t2
+

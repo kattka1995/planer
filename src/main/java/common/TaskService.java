@@ -1,10 +1,13 @@
 package common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class TaskService implements CommandInterface {
+    private static final Logger logger = LoggerFactory.getLogger(
+            TaskService.class);
     public static final String ERROR = "Error";
     private final Input input = new Input();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -12,8 +15,10 @@ public class TaskService implements CommandInterface {
     private Integer taskId = 1;
 
     private static void printTask(Map.Entry<Integer, Task> k) {
-        System.out.printf(("%s. [%s] %s\n"), k.getKey(), k.getValue().getStatus() ? "x" : " ",
+        String taskList = String.format(("%s. [%s] %s\n"), k.getKey(), k.getValue().getStatus() ? "x" : " ",
                 k.getValue().getDescription());
+        System.out.print(taskList);
+        logger.debug("User output: {}",taskList);
     }
 
     public void run() {
@@ -21,6 +26,7 @@ public class TaskService implements CommandInterface {
             System.out.println("Введите название команды : add <описание задачи>; toggle <идентификатор задачи>; " +
                     "delete <идентификатор задачи>; edit <идентификатор задачи> <новое значение>; search <substring>; print; print all; quit.");
             commandName = input.enterCommand();
+            logger.debug("User input: {}",commandName);
             readCommand(commandName);
         }
         while (!commandName.equalsIgnoreCase(QUIT));
@@ -30,6 +36,7 @@ public class TaskService implements CommandInterface {
     public void readCommand(String command) {
         String[] parse = command.split(" ");
         String commandName = parse[0].toLowerCase();
+
 
         switch (commandName) {
             case ADD: {
@@ -91,7 +98,10 @@ public class TaskService implements CommandInterface {
                 description = str[0];
             }
             addNewTask(description);
+
+
         }
+
     }
 
     private String replaceCommandName(String str) {
@@ -101,6 +111,7 @@ public class TaskService implements CommandInterface {
     private void addNewTask(String description) {
         Task task = new Task(description);
         tasks.put(taskId++, task);
+
     }
 
     private void editTask(String id, String newDescription) {
@@ -109,9 +120,11 @@ public class TaskService implements CommandInterface {
             if (!tasks.containsKey(taskId) || newDescription.isEmpty())
                 System.out.println(ERROR);
             else {
+
                 tasks.get(taskId).setDescription(newDescription);
             }
         } catch (NumberFormatException ex) {
+            logger.error("Cannot parse number: {}", id,ex);
             System.out.println(ERROR);
         }
     }
@@ -124,6 +137,7 @@ public class TaskService implements CommandInterface {
             else tasks.get(taskId)
                     .setStatus(!tasks.get(taskId).getStatus());
         } catch (NumberFormatException ex) {
+            logger.error("Cannot parse number: {}", id,ex);
             System.out.println(ERROR);
         }
     }
@@ -142,14 +156,15 @@ public class TaskService implements CommandInterface {
                 tasks.keySet().remove(taskId);
             }
         } catch (NumberFormatException ex) {
+            logger.error("Cannot parse number: {}", id,ex);
             System.out.println(ERROR);
         }
     }
 
     public void print(boolean hasAll) {
-        if (hasAll) {
-            tasks.entrySet().forEach(TaskService::printTask);
-        } else
+        if (hasAll)
+         tasks.entrySet().forEach(TaskService::printTask);
+         else
             tasks.entrySet().stream().filter(s -> !s.getValue().getStatus()).forEach(TaskService::printTask);
     }
 }
